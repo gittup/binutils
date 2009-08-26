@@ -1,0 +1,37 @@
+include_rules
+
+obj-y += app.c
+obj-y += as.c
+obj-y += atof-generic.c
+obj-y += cond.c
+obj-y += depend.c
+obj-y += dwarf2dbg.c
+obj-y += dw2gencfi.c
+obj-y += ecoff.c
+obj-y += ehopt.c
+obj-y += expr.c
+obj-y += flonum-copy.c
+obj-y += flonum-konst.c
+obj-y += flonum-mult.c
+obj-y += frags.c
+obj-y += hash.c
+obj-y += input-file.c
+obj-y += input-scrub.c
+obj-y += listing.c
+obj-y += literal.c
+obj-y += macro.c
+obj-y += messages.c
+obj-y += output-file.c
+obj-y += read.c
+obj-y += remap.c
+obj-y += sb.c
+obj-y += stabs.c
+obj-y += subsegs.c
+obj-y += symbols.c
+obj-y += write.c
+obj-y += config/tc-i386.c
+obj-y += config/obj-elf.c
+obj-y += config/atof-ieee.c
+
+: foreach $(obj-y) | ../bfd/bfd.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I.. -Iconfig -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 -c %f -o %o |> %B.o {objs}
+: {objs} ../opcodes/libopcodes.a ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> as

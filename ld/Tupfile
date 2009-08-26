@@ -1,0 +1,33 @@
+include_rules
+
+obj-y += ldgram.c
+obj-y += lexsup.c
+obj-y += ldlang.c
+obj-y += mri.c
+obj-y += ldctor.c
+obj-y += ldmain.c
+obj-y += ldwrite.c
+obj-y += ldexp.c
+obj-y += ldemul.c
+obj-y += ldver.c
+obj-y += ldmisc.c
+obj-y += ldfile.c
+obj-y += ldcref.c
+obj-y += eelf_i386.c
+obj-y += ei386linux.c
+
+CFLAGS_ldmain.c += -DDEFAULT_EMULATION='"elf_i386"'
+CFLAGS_ldmain.c += -DBINDIR='"/usr/bin"'
+CFLAGS_ldmain.c += -DTOOLBINDIR='"/usr/i686-pc-linux-gnu/bin"'
+CFLAGS_ldmain.c += -DTARGET='"i686-pc-linux-gnu"'
+CFLAGS_ldmain.c += -DTARGET_SYSTEM_ROOT=\"\"
+
+CFLAGS_ldfile.c += -DSCRIPTDIR='"/usr/i686-pc-linux-gnu/lib"'
+CFLAGS_ldfile.c += -DBINDIR='"/usr/bin"'
+CFLAGS_ldfile.c += -DTOOLBINDIR='"/usr/i686-pc-linux-gnu/bin"'
+
+: ldgram.y |> bison -o %B.c -d %f |> %B.c %B.h
+: ldlex.l |> flex -o %o %f |> ldlex.c
+: ldlex.c | ../bfd/bfd.h ldgram.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -O2 -c %f -o %o |> %B.o {objs}
+: foreach $(obj-y) | ../bfd/bfd.h ldgram.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 $(CFLAGS_%f) -c %f -o %o |> %B.o {objs}
+: {objs} ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> ld

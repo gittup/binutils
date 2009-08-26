@@ -1,0 +1,55 @@
+include_rules
+obj-y += regex.c
+obj-y += cplus-dem.c
+obj-y += cp-demangle.c
+obj-y += md5.c
+obj-y += sha1.c
+obj-y += alloca.c
+obj-y += argv.c
+obj-y += choose-temp.c
+obj-y += concat.c
+obj-y += cp-demint.c
+obj-y += crc32.c
+obj-y += dyn-string.c
+obj-y += fdmatch.c
+obj-y += fibheap.c
+obj-y += filename_cmp.c
+obj-y += floatformat.c
+obj-y += fnmatch.c
+obj-y += fopen_unlocked.c
+obj-y += getopt.c
+obj-y += getopt1.c
+obj-y += getpwd.c
+obj-y += getruntime.c
+obj-y += hashtab.c
+obj-y += hex.c
+obj-y += lbasename.c
+obj-y += lrealpath.c
+obj-y += make-relative-prefix.c
+obj-y += make-temp-file.c
+obj-y += objalloc.c
+obj-y += obstack.c
+obj-y += partition.c
+obj-y += pexecute.c
+obj-y += physmem.c
+obj-y += pex-common.c
+obj-y += pex-one.c
+obj-y += pex-unix.c
+obj-y += safe-ctype.c
+obj-y += sort.c
+obj-y += spaces.c
+obj-y += splay-tree.c
+obj-y += strerror.c
+obj-y += strsignal.c
+obj-y += unlink-if-ordinary.c
+obj-y += xatexit.c
+obj-y += xexit.c
+obj-y += xmalloc.c
+obj-y += xmemdup.c
+obj-y += xstrdup.c
+obj-y += xstrerror.c
+obj-y += xstrndup.c
+obj-y += mkstemps.c
+
+: foreach $(obj-y) |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -O2 -I. -I../include  -W -Wall -Wwrite-strings -Wc++-compat -Wstrict-prototypes -pedantic -c %f -o %o |> %B.o {objs}
+: {objs} |> ^ AR %o^ rm -f %o; ar rcs %o %f |> libiberty.a

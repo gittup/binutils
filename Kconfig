@@ -1,0 +1,30 @@
+config supports_plugins
+	bool "supports plugins"
+	default 0
+config wordsize
+	int "wordsize"
+	default 32
+config bfd_default_target_size
+	int "bfd_default_target_size"
+	default 32
+config BFD_HOST_64_BIT_DEFINED
+	bool "BFD_HOST_64_BIT_DEFINED"
+	default 1
+config BFD_HOST_64BIT_LONG
+	bool "BFD_HOST_64BIT_LONG"
+	default 0
+config BFD_HOST_64BIT_LONG_LONG
+	bool "BFD_HOST_64BIT_LONG_LONG"
+	default 1
+config BFD_HOST_64_BIT
+	string "BFD_HOST_64_BIT"
+	default "long long"
+config BFD_HOST_U_64_BIT
+	string "BFD_HOST_U_64_BIT"
+	default "unsigned long long"
+config BFD_HOSTPTR_T
+	string "BFD_HOSTPTR_T"
+	default "unsigned long"
+config bfd_file_ptr
+	string "bfd_file_ptr"
+	default "BFD_HOST_64_BIT"

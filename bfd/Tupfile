@@ -1,0 +1,66 @@
+include_rules
+obj-y += aout32.c
+obj-y += archive.c
+obj-y += archures.c
+obj-y += bfd.c
+obj-y += bfdio.c
+obj-y += bfdwin.c
+obj-y += binary.c
+obj-y += cache.c
+obj-y += coffgen.c
+obj-y += cofflink.c
+obj-y += compress.c
+obj-y += corefile.c
+obj-y += cpu-i386.c
+obj-y += dwarf1.c
+obj-y += dwarf2.c
+obj-y += elf-attrs.c
+obj-y += elf-eh-frame.c
+obj-y += elf-ifunc.c
+obj-y += elf-strtab.c
+obj-y += elf-vxworks.c
+obj-y += elf.c
+obj-y += elf32-gen.c
+obj-y += elf32-i386.c
+obj-y += elf32.c
+obj-y += elflink.c
+obj-y += format.c
+obj-y += hash.c
+obj-y += i386linux.c
+obj-y += ihex.c
+obj-y += init.c
+obj-y += libbfd.c
+obj-y += linker.c
+obj-y += merge.c
+obj-y += opncls.c
+obj-y += pei-i386.c
+obj-y += peigen.c
+obj-y += reloc.c
+obj-y += section.c
+obj-y += simple.c
+obj-y += srec.c
+obj-y += stab-syms.c
+obj-y += stabs.c
+obj-y += syms.c
+obj-y += targets.c
+obj-y += tekhex.c
+obj-y += trad-core.c
+obj-y += verilog.c
+
+CFLAGS_archures.c += -DDEFAULT_VECTOR=bfd_elf32_i386_vec
+CFLAGS_archures.c += -DSELECT_VECS='&bfd_elf32_i386_vec,&i386linux_vec,&i386pei_vec,&bfd_elf32_little_generic_vec,&bfd_elf32_big_generic_vec'
+CFLAGS_archures.c += -DSELECT_ARCHITECTURES='&bfd_i386_arch'
+CFLAGS_archures.c += -DHAVE_bfd_elf32_i386_vec
+CFLAGS_archures.c += -DHAVE_i386linux_vec
+CFLAGS_archures.c += -DHAVE_i386pei_vec
+CFLAGS_archures.c += -DHAVE_bfd_elf32_little_generic_vec
+CFLAGS_archures.c += -DHAVE_bfd_elf32_big_generic_vec
+CFLAGS_targets.c = $(CFLAGS_archures.c)
+
+CFLAGS_dwarf2.c += -DDEBUGDIR=\"/usr/lib/debug\"
+: peXXigen.c |> sed -e s/XX/pe/g < %f > %o |> peigen.c
+: elfxx-target.h |> sed -e s/NN/32/g < %f > %o |> elf32-target.h {headers}
+: targmatch.sed config.bfd |> sed -f targmatch.sed < config.bfd > %o |> targmatch.h {headers}
+, bfd-in2.h |> bfd.h {headers}
+: foreach $(obj-y) | {headers} |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../include -DTRAD_CORE -DBINDIR=\"/usr/bin\" -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 $(CFLAGS_%f) -c %f -o %o |> %B.o {objs}
+: {objs} |> ^ AR %o^ rm -f %o; ar rcs %o %f |> libbfd.a

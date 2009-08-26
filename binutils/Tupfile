@@ -1,0 +1,49 @@
+include_rules
+
+obj-y += addr2line.c
+obj-y += ar.c
+obj-y += arparse.c
+obj-y += arsup.c
+obj-y += binemul.c
+obj-y += bucomm.c
+obj-y += debug.c
+obj-y += dwarf.c
+obj-y += emul_vanilla.c
+obj-y += filemode.c
+obj-y += ieee.c
+obj-y += is-strip.c
+obj-y += nm.c
+obj-y += not-ranlib.c
+obj-y += not-strip.c
+obj-y += objcopy.c
+obj-y += objdump.c
+obj-y += prdbg.c
+obj-y += rdcoff.c
+obj-y += rddbg.c
+obj-y += readelf.c
+obj-y += rename.c
+obj-y += size.c
+obj-y += stabs.c
+obj-y += strings.c
+obj-y += unwind-ia64.c
+obj-y += version.c
+obj-y += wrstabs.c
+
+: arparse.y |> bison -o %B.c -d %f |> %B.c %B.h
+: arlex.l |> flex -o %o %f |> arlex.c
+
+: foreach $(obj-y) | ../bfd/bfd.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 -c %f -o %o |> %B.o {size-objs}
+: foreach arlex.c | ../bfd/bfd.h arparse.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -O2 -c %f -o %o |> %B.o {ar-objs}
+
+common = bucomm.o version.o filemode.o ../bfd/libbfd.a ../libiberty/libiberty.a
+obj-common = rddbg.o debug.o stabs.o ieee.o rdcoff.o $(common)
+
+: arparse.o arlex.o ar.o not-ranlib.o arsup.o rename.o binemul.o emul_vanilla.o $(common) |> gcc -B/usr/bin/ %f -o %o -lfl -lz |> ar
+: addr2line.o $(common) |> gcc -B/usr/bin/ %f -o %o -lz |> addr2line
+: nm.o $(common) |> gcc -B/usr/bin %f -o %o -lz |> nm
+: objcopy.o not-strip.o rename.o wrstabs.o $(obj-common) |> gcc -B/usr/bin %f -o %o -lz |> objcopy
+: objdump.o dwarf.o prdbg.o $(obj-common) ../opcodes/libopcodes.a |> gcc -B/usr/bin %f -o %o -lz |> objdump
+: readelf.o version.o unwind-ia64.o dwarf.o ../libiberty/libiberty.a |> gcc -B/usr/bin %f -o %o -lz |> readelf
+: size.o $(common) |> gcc -B/usr/bin/ %f -o %o -lz |> size
+: strings.o $(common) |> gcc -B/usr/bin %f -o %o -lz |> strings
+: objcopy.o is-strip.o rename.o wrstabs.o $(obj-common) |> gcc -B/usr/bin %f -o %o -lz |> strip
