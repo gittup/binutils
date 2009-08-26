@@ -1,0 +1,4 @@
+#define BFD_VERSION_DATE 20090811
+#define BFD_VERSION 219510000
+#define BFD_VERSION_STRING  "(GNU Binutils) " "2.19.51.20090811"
+#define REPORT_BUGS_TO "marfey@gmail.com"
