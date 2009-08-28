@@ -51,5 +51,5 @@ obj-y += xstrerror.c
 obj-y += xstrndup.c
 obj-y += mkstemps.c
 
-: foreach $(obj-y) |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -O2 -I. -I../include  -W -Wall -Wwrite-strings -Wc++-compat -Wstrict-prototypes -pedantic -c %f -o %o |> %B.o {objs}
+: foreach $(obj-y) |> !host_cc |> %B.o {objs}
 : {objs} |> ^ AR %o^ rm -f %o; ar rcs %o %f |> libiberty.a

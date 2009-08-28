@@ -33,5 +33,8 @@ obj-y += config/tc-i386.c
 obj-y += config/obj-elf.c
 obj-y += config/atof-ieee.c
 
-: foreach $(obj-y) | ../bfd/bfd.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I.. -Iconfig -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 -c %f -o %o |> %B.o {objs}
+CFLAGS += -Iconfig
+CFLAGS += -I..
+
+: foreach $(obj-y) | ../bfd/bfd.h |> !host_cc |> %B.o {objs}
 : {objs} ../opcodes/libopcodes.a ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> as

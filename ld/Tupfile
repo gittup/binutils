@@ -26,8 +26,14 @@ CFLAGS_ldfile.c += -DSCRIPTDIR='"/usr/i686-pc-linux-gnu/lib"'
 CFLAGS_ldfile.c += -DBINDIR='"/usr/bin"'
 CFLAGS_ldfile.c += -DTOOLBINDIR='"/usr/i686-pc-linux-gnu/bin"'
 
+CFLAGS += -DLOCALE_DIR="\"/usr/share/locale\""
+CFLAGS += -Dbin_dummy_emulation=bin_vanilla_emulation
+
+# lex sucks
+CFLAGS_ldlex.c += -Wno-unused
+
 : ldgram.y |> bison -o %B.c -d %f |> %B.c %B.h
 : ldlex.l |> flex -o %o %f |> ldlex.c
-: ldlex.c | ../bfd/bfd.h ldgram.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -O2 -c %f -o %o |> %B.o {objs}
-: foreach $(obj-y) | ../bfd/bfd.h ldgram.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 $(CFLAGS_%f) -c %f -o %o |> %B.o {objs}
+: foreach ldlex.c | ../bfd/bfd.h ldgram.h |> !host_cc |> %B.o {objs}
+: foreach $(obj-y) | ../bfd/bfd.h ldgram.h |> !host_cc |> %B.o {objs}
 : {objs} ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> ld

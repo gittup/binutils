@@ -32,8 +32,13 @@ obj-y += wrstabs.c
 : arparse.y |> bison -o %B.c -d %f |> %B.c %B.h
 : arlex.l |> flex -o %o %f |> arlex.c
 
-: foreach $(obj-y) | ../bfd/bfd.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror -O2 -c %f -o %o |> %B.o {size-objs}
-: foreach arlex.c | ../bfd/bfd.h arparse.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../bfd -I../include -DLOCALEDIR="\"/usr/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation -W -Wall -Wstrict-prototypes -Wmissing-prototypes -O2 -c %f -o %o |> %B.o {ar-objs}
+CFLAGS += -Dbin_dummy_emulation=bin_vanilla_emulation
+
+# lex sucks
+CFLAGS_arlex.c += -Wno-sign-compare -Wno-unused
+
+: foreach $(obj-y) | ../bfd/bfd.h |> !host_cc |> %B.o {size-objs}
+: foreach arlex.c | ../bfd/bfd.h arparse.h |> !host_cc |> %B.o {ar-objs}
 
 common = bucomm.o version.o filemode.o ../bfd/libbfd.a ../libiberty/libiberty.a
 obj-common = rddbg.o debug.o stabs.o ieee.o rdcoff.o $(common)

@@ -1,0 +1,10 @@
+CFLAGS += -DHAVE_CONFIG_H
+CFLAGS += -I.
+CFLAGS += -I$(TUP_CWD)/include
+CFLAGS += -I$(TUP_CWD)/bfd
+CFLAGS += -DTRAD_CORE
+CFLAGS += -DBINDIR=\"/usr/bin\"
+CFLAGS += -W
+CFLAGS += -Wall
+CFLAGS += -Wstrict-prototypes
+CFLAGS += -Werror
