@@ -32,8 +32,8 @@ CFLAGS += -Dbin_dummy_emulation=bin_vanilla_emulation
 # lex sucks
 CFLAGS_ldlex.c += -Wno-unused
 
-: ldgram.y |> bison -o %B.c -d %f |> %B.c %B.h
-: ldlex.l |> flex -o %o %f |> ldlex.c
+: ldgram.y |> !bison |> %B.c %B.h
+: ldlex.l |> !flex |> ldlex.c
 : foreach ldlex.c | ../bfd/bfd.h ldgram.h |> !host_cc |> %B.o {objs}
 : foreach $(obj-y) | ../bfd/bfd.h ldgram.h |> !host_cc |> %B.o {objs}
 : {objs} ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> ld

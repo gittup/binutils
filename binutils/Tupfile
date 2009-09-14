@@ -29,8 +29,8 @@ obj-y += unwind-ia64.c
 obj-y += version.c
 obj-y += wrstabs.c
 
-: arparse.y |> bison -o %B.c -d %f |> %B.c %B.h
-: arlex.l |> flex -o %o %f |> arlex.c
+: arparse.y |> !bison |> %B.c %B.h
+: arlex.l |> !flex |> %B.c
 
 CFLAGS += -Dbin_dummy_emulation=bin_vanilla_emulation
 
