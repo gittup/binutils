@@ -9,13 +9,13 @@ config bfd_default_target_size
 	default 32
 config BFD_HOST_64_BIT_DEFINED
 	bool "BFD_HOST_64_BIT_DEFINED"
-	default 1
+	default y
 config BFD_HOST_64BIT_LONG
 	bool "BFD_HOST_64BIT_LONG"
-	default 0
+	default n
 config BFD_HOST_64BIT_LONG_LONG
 	bool "BFD_HOST_64BIT_LONG_LONG"
-	default 1
+	default y
 config BFD_HOST_64_BIT
 	string "BFD_HOST_64_BIT"
 	default "long long"
