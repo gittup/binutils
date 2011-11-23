@@ -5,4 +5,4 @@ obj-y += dis-init.c
 obj-y += i386-dis.c
 obj-y += i386-opc.c
 : foreach $(obj-y) | ../bfd/bfd.h |> ^ HOSTCC %f^ gcc -B/usr/bin/ -DHAVE_CONFIG_H -I. -I../include -I../bfd -DTRAD_CORE -DBINDIR=\"/usr/bin\" -W -Wall -Wstrict-prototypes -Wmissing-prototypes -O2 $(CFLAGS_%f) -c %f -o %o |> %B.o {objs}
-: {objs} |> ^ HOSTAR %o^ rm -f %o; ar rcs %o %f |> libopcodes.a
+: {objs} |> ^ HOSTAR %o^ ar rcs %o %f |> libopcodes.a

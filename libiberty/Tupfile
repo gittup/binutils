@@ -52,4 +52,4 @@ obj-y += xstrndup.c
 obj-y += mkstemps.c
 
 : foreach $(obj-y) |> !host_cc |> %B.o {objs}
-: {objs} |> ^ AR %o^ rm -f %o; ar rcs %o %f |> libiberty.a
+: {objs} |> ^ AR %o^ ar rcs %o %f |> libiberty.a
