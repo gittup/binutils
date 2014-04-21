@@ -36,4 +36,4 @@ CFLAGS_ldlex.c += -Wno-unused
 : ldlex.l |> !flex |> ldlex.c
 : foreach ldlex.c | ../bfd/bfd.h ldgram.h |> !host_cc |> %B.o {objs}
 : foreach $(obj-y) | ../bfd/bfd.h ldgram.h |> !host_cc |> %B.o {objs}
-: {objs} ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> ld
+: {objs} ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> ld | $(GITTUP_ROOT)/<compiler_files>

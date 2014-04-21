@@ -37,4 +37,4 @@ CFLAGS += -Iconfig
 CFLAGS += -I..
 
 : foreach $(obj-y) | ../bfd/bfd.h |> !host_cc |> %B.o {objs}
-: {objs} ../opcodes/libopcodes.a ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> as
+: {objs} ../opcodes/libopcodes.a ../bfd/libbfd.a ../libiberty/libiberty.a |> ^ LD %o^ gcc -B/usr/bin %f -o %o -lz |> as | $(GITTUP_ROOT)/<compiler_files>
